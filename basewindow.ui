@@ -29,9 +29,9 @@
    <property name="geometry">
     <rect>
      <x>370</x>
-     <y>20</y>
+     <y>10</y>
      <width>261</width>
-     <height>391</height>
+     <height>401</height>
     </rect>
    </property>
    <property name="title">
@@ -43,18 +43,84 @@
    <property name="checkable">
     <bool>false</bool>
    </property>
-   <widget class="QWidget" name="formLayoutWidget">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
       <width>241</width>
-      <height>361</height>
+      <height>371</height>
      </rect>
     </property>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
+    <layout class="QVBoxLayout" name="vlayServerDetails">
+     <property name="margin">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="lblServerName">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Server Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLineEdit" name="txtServerName"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblServerHost">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Server Hostname/IP:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="txtServerHost"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblOpenSequence">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Open Sequence:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="txtOpenSequence">
+       <property name="tabChangesFocus">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblCloseSequence">
+       <property name="text">
+        <string>Close Sequence:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="txtCloseSequence">
+       <property name="tabChangesFocus">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -62,15 +128,108 @@
   <widget class="QListWidget" name="lstServers">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>341</width>
-     <height>391</height>
+     <x>10</x>
+     <y>10</y>
+     <width>351</width>
+     <height>401</height>
     </rect>
    </property>
+  </widget>
+  <widget class="QPushButton" name="btnSaveConfig">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>450</y>
+     <width>121</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save Settings...</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>420</y>
+     <width>351</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="btnAddServer">
+      <property name="text">
+       <string>Add Server...</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnDelServer">
+      <property name="text">
+       <string>Delete Server</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnAddServer</sender>
+   <signal>clicked()</signal>
+   <receiver>BaseWindow</receiver>
+   <slot>newServer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>151</x>
+     <y>440</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>405</x>
+     <y>450</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDelServer</sender>
+   <signal>clicked()</signal>
+   <receiver>BaseWindow</receiver>
+   <slot>delServer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>436</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>409</x>
+     <y>423</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstServers</sender>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+   <receiver>BaseWindow</receiver>
+   <slot>editServer(QListWidgetItem*,QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>208</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>560</x>
+     <y>427</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>newServer()</slot>
+  <slot>delServer()</slot>
+  <slot>editServer(QListWidgetItem*,QListWidgetItem*)</slot>
+ </slots>
 </ui>
