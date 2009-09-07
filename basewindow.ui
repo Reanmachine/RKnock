@@ -226,10 +226,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtServerName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>BaseWindow</receiver>
+   <slot>updateLiveServerName(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>458</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>370</x>
+     <y>5</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>newServer()</slot>
   <slot>delServer()</slot>
   <slot>editServer(QListWidgetItem*,QListWidgetItem*)</slot>
+  <slot>updateLiveServerName(QString)</slot>
  </slots>
 </ui>

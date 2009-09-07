@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'basewindow.ui'
 **
-** Created: Sun Sep 6 08:34:55 2009
+** Created: Sun Sep 6 09:28:44 2009
 **      by: Qt User Interface Compiler version 4.5.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -142,6 +142,7 @@ public:
         QObject::connect(btnAddServer, SIGNAL(clicked()), BaseWindow, SLOT(newServer()));
         QObject::connect(btnDelServer, SIGNAL(clicked()), BaseWindow, SLOT(delServer()));
         QObject::connect(lstServers, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), BaseWindow, SLOT(editServer(QListWidgetItem*,QListWidgetItem*)));
+        QObject::connect(txtServerName, SIGNAL(textChanged(QString)), BaseWindow, SLOT(updateLiveServerName(QString)));
 
         QMetaObject::connectSlotsByName(BaseWindow);
     } // setupUi

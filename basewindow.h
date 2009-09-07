@@ -4,6 +4,7 @@
 #include <QtGui/QWidget>
 #include <QtGui/QListWidgetItem>
 #include <QList>
+#include <QtXml>
 
 
 #include "serverrecord.h"
@@ -31,11 +32,14 @@ public slots:
 
     // Server Manipulation
     void updateServer(QListWidgetItem* wid);
+    void updateLiveServerName(QString newText);
     void editServer(QListWidgetItem* cur, QListWidgetItem* prev);
     void newServer();
     void delServer();
 
     void populateServer();
+
+    void updateServerName(QString oName, QString sName);
 
 private:
     Ui::BaseWindow *ui;
@@ -44,7 +48,15 @@ private:
 
     int serverCounter;
 
+    void insertServer(QString name, QString host, QList<int> open, QList<int> close);
+    void insertServer(QDomElement el);
+
     QList<ServerRecord*> m_servers;
+
+    QString cfgFileLocation;
+
+private slots:
+    void on_btnSaveConfig_clicked();
 };
 
 #endif // BASEWINDOW_H

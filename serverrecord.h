@@ -21,10 +21,10 @@ public:
 
     QString serverName() { return this->m_serverName; }
     QString serverHost() { return this->m_serverHost; }
-    QList<int> serverOpen() { return this->m_serverOpen; }
-    QList<int> serverClose() { return this->m_serverClose; }
+    QList<int> *serverOpen() { return &(this->m_serverOpen); }
+    QList<int> *serverClose() { return &(this->m_serverClose); }
 
-    void setServerName(QString name) { this->m_serverName = name; }
+    void setServerName(QString name) { serverNameUpdated(this->m_serverName, name); this->m_serverName = name; }
     void setServerHost(QString host) { this->m_serverHost = host; }
 
     void fromStringOpen(QString open);
@@ -36,6 +36,13 @@ public:
     // Xml Translation Functions
     QDomElement toElement(QDomDocument doc);
     void fromElement(QDomElement el);
+
+public slots:
+    void knockOpen();
+    void knockClose();
+
+signals:
+    void serverNameUpdated(QString oName, QString sName);
 
 };
 
