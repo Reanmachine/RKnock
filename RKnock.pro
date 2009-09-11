@@ -21,3 +21,5 @@ FORMS += basewindow.ui \
     knockdialog.ui \
     aboutdialog.ui
 RESOURCES += core.qrc
+OTHER_FILES += RKnock.rc
+RC_FILE = RKnock.rc
