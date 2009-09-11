@@ -57,7 +57,10 @@ BaseWindow::BaseWindow(QWidget *parent)
 
     //this->cfgFileLocation = QtDir::homePath().append("\\").append("
 #else
-    // TODO
+    QString path = QString("%1/.%2/%3").arg(QDir::homePath(), app->organizationName(), app->applicationName());
+    QString file = QString("%1/Settings.xml").arg(path);
+
+    this->cfgFileLocation = file;
 #endif
 
     if (QFile(this->cfgFileLocation).exists())
