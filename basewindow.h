@@ -62,6 +62,8 @@ public slots:
     void knockOpen();
     void knockClose();
     void cleanupForm();
+
+    void showAbout();
 private:
     Ui::BaseWindow *ui;
 

@@ -1,7 +1,9 @@
 #include "basewindow.h"
 #include "ui_basewindow.h"
 
+#include "aboutdialog.h"
 #include "knockdialog.h"
+#include "core.h"
 
 #include <QApplication>
 #include <QtCore/QPointer>
@@ -17,6 +19,7 @@
 BaseWindow::BaseWindow(QWidget *parent)
     : QWidget(parent), ui(new Ui::BaseWindow)
 {
+    this->setAttribute(Qt::WA_QuitOnClose, false);
     serverCounter = 1;
     ui->setupUi(this);
 
@@ -79,8 +82,10 @@ BaseWindow::BaseWindow(QWidget *parent)
 
     // Open Dialog
     subaction = this->trayMenu->addAction("Open Configuration Dialog...");
-    //this->trayMenu->addSeparator();
     connect(subaction, SIGNAL(triggered()), this, SLOT(show()));
+
+    subaction = this->trayMenu->addAction("About RKnock...");
+    connect(subaction, SIGNAL(triggered()), this, SLOT(showAbout()));
 
     this->trayMenu->addMenu(trayServersMenu);
 
@@ -182,7 +187,7 @@ void BaseWindow::saveSettings()
     QDomDocument doc;
 
     QDomElement root = doc.createElement("RKnockSettings");
-    root.setAttribute("Version", "1.0.0.0000");
+    root.setAttribute("Version", RKNOCK_CFG_VERSION);
     doc.appendChild(root);
 
     for(int i = 0; i < m_servers.size(); i++)
@@ -476,4 +481,11 @@ void BaseWindow::knockClose()
 void BaseWindow::cleanupForm()
 {
     sender()->deleteLater(); // Queue the sender for later deletion!
+}
+
+void BaseWindow::showAbout()
+{
+    AboutDialog *ad = new AboutDialog(this);
+    ad->setModal(true);
+    ad->show();
 }

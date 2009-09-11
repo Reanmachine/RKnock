@@ -7,6 +7,7 @@ KnockDialog::KnockDialog(QWidget *parent, ServerRecord *rec, KnockDialog::KnockM
     QDialog(parent),
     m_ui(new Ui::KnockDialog)
 {
+    this->setAttribute(Qt::WA_QuitOnClose, false);
     m_ui->setupUi(this);
 
     this->setWindowTitle(QString("Knocking: %1").arg(rec->serverHost()));
@@ -41,20 +42,28 @@ void KnockDialog::changeEvent(QEvent *e)
 
 void KnockDialog::knockOpen()
 {
+    this->m_ui->progressBar->setMaximum(record->serverOpen()->size());
+    this->m_ui->progressBar->setValue(0);
+
     thread = new KnockerThread(record->serverHost(), record->serverOpen());
     connect(thread, SIGNAL(beginSequence()), this, SLOT(lockForm()));
     connect(thread, SIGNAL(endSequence()), this, SLOT(unlockForm()));
     connect(thread, SIGNAL(status(QString)), this, SLOT(updateStatus(QString)));
+    connect(thread, SIGNAL(step()), this, SLOT(knockStep()));
 
     thread->start();
 }
 
 void KnockDialog::knockClose()
 {
+    this->m_ui->progressBar->setMaximum(record->serverClose()->size());
+    this->m_ui->progressBar->setValue(0);
+
     thread = new KnockerThread(record->serverHost(), record->serverClose());
     connect(thread, SIGNAL(beginSequence()), this, SLOT(lockForm()));
     connect(thread, SIGNAL(endSequence()), this, SLOT(unlockForm()));
     connect(thread, SIGNAL(status(QString)), this, SLOT(updateStatus(QString)));
+    connect(thread, SIGNAL(step()), this, SLOT(knockStep()));
 
     thread->start();
 }
@@ -103,4 +112,9 @@ void KnockDialog::abort()
         return;
 
     this->thread->catchTerminated();
+}
+
+void KnockDialog::knockStep()
+{
+    this->m_ui->progressBar->setValue(this->m_ui->progressBar->value()+1);
 }

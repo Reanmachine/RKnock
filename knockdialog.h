@@ -32,6 +32,7 @@ public slots:
     void lockForm();
     void unlockForm();
     void abort();
+    void knockStep();
 
 protected:
     void changeEvent(QEvent *e);

@@ -34,6 +34,7 @@ signals:
     void beginSequence();
     void endSequence();
 
+    void step();
     void status(QString msg);
 };
 

@@ -68,6 +68,8 @@ bool KnockerThread::knockPort(int port)
 
     bool res = socket.waitForConnected(1000);
 
+    step();
+
     return result;
 }
 

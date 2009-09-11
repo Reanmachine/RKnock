@@ -9,11 +9,15 @@ SOURCES += main.cpp \
     basewindow.cpp \
     serverrecord.cpp \
     knockdialog.cpp \
-    knockerthread.cpp
+    knockerthread.cpp \
+    aboutdialog.cpp
 HEADERS += basewindow.h \
     serverrecord.h \
     knockdialog.h \
-    knockerthread.h
+    knockerthread.h \
+    aboutdialog.h \
+    core.h
 FORMS += basewindow.ui \
-    knockdialog.ui
+    knockdialog.ui \
+    aboutdialog.ui
 RESOURCES += core.qrc
