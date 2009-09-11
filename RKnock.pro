@@ -7,7 +7,13 @@ TARGET = RKnock
 TEMPLATE = app
 SOURCES += main.cpp \
     basewindow.cpp \
-    serverrecord.cpp
+    serverrecord.cpp \
+    knockdialog.cpp \
+    knockerthread.cpp
 HEADERS += basewindow.h \
-    serverrecord.h
-FORMS += basewindow.ui
+    serverrecord.h \
+    knockdialog.h \
+    knockerthread.h
+FORMS += basewindow.ui \
+    knockdialog.ui
+RESOURCES += core.qrc

@@ -1,6 +1,8 @@
 #include "basewindow.h"
 #include "ui_basewindow.h"
 
+#include "knockdialog.h"
+
 #include <QApplication>
 #include <QtCore/QPointer>
 #include <QtCore/QSharedPointer>
@@ -20,6 +22,10 @@ BaseWindow::BaseWindow(QWidget *parent)
 
     QApplication *app = (QApplication*)QApplication::instance();
     this->setWindowTitle(QString("%1 %2 (v%3)").arg(app->organizationName(), app->applicationName(), app->applicationVersion()));
+
+    // Icon
+    QIcon ico(":/resources/RKnock.ico");
+    this->setWindowIcon(ico);
 
     // Find the config file, does it exist?
 #ifdef Q_WS_WIN
@@ -50,10 +56,38 @@ BaseWindow::BaseWindow(QWidget *parent)
         this->cfgFileLocation = QString("%1/%2/%3").arg(fSection, mSection, lSection);
 
     //this->cfgFileLocation = QtDir::homePath().append("\\").append("
+#else
+    // TODO
 #endif
 
     if (QFile(this->cfgFileLocation).exists())
         this->loadSettings();
+
+    this->tray = new QSystemTrayIcon(this);
+    this->trayMenu = new QMenu(this);
+    this->trayServersMenu = new QMenu("Servers", this->trayMenu);
+
+    this->tray->setContextMenu(this->trayMenu);
+    this->tray->setIcon(QIcon(":/resources/RKnock.ico"));
+    this->tray->setVisible(true);
+
+    QAction *subaction = 0;
+    QMenu *submenu = 0;
+
+    // Open Dialog
+    subaction = this->trayMenu->addAction("Open Configuration Dialog...");
+    //this->trayMenu->addSeparator();
+    connect(subaction, SIGNAL(triggered()), this, SLOT(show()));
+
+    this->trayMenu->addMenu(trayServersMenu);
+
+    this->trayMenu->addSeparator();
+    subaction = this->trayMenu->addAction("Exit...");
+    connect(subaction, SIGNAL(triggered()), app, SLOT(quit()));
+
+    connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(activateMenu(QSystemTrayIcon::ActivationReason)));
+
+    this->rebuildActions();
 }
 
 BaseWindow::~BaseWindow()
@@ -72,6 +106,8 @@ void BaseWindow::insertServer(QDomElement el)
     QListWidgetItem *item = new QListWidgetItem(rec->serverName());
     this->ui->lstServers->addItem(item);
     connect(rec, SIGNAL(serverNameUpdated(QString,QString)), this, SLOT(updateServerName(QString,QString))); // Automagic updates (I hope!)
+    connect(rec, SIGNAL(knockOpen()), this, SLOT(knockOpen()));
+    connect(rec, SIGNAL(knockClose()), this, SLOT(knockClose()));
 }
 
 void BaseWindow::insertServer(QString name, QString host, QList<int> open, QList<int> close)
@@ -92,9 +128,51 @@ void BaseWindow::insertServer(QString name, QString host, QList<int> open, QList
     QListWidgetItem *item = new QListWidgetItem(name);
     this->ui->lstServers->addItem(item);
     connect(rec, SIGNAL(serverNameUpdated(QString,QString)), this, SLOT(updateServerName(QString,QString))); // Automagic updates (I hope!)
+    connect(rec, SIGNAL(knockOpen()), this, SLOT(knockOpen()));
+    connect(rec, SIGNAL(knockClose()), this, SLOT(knockClose()));
+}
+
+void BaseWindow::closeEvent(QCloseEvent *event)
+{
+    QMessageBox question(QMessageBox::Question, "Save Changes?", "Closing this window you may lose some of your changes to the configuration.\n\nWould you like to save before exiting?", (QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel));
+    int result = question.exec();
+
+    if (result == QMessageBox::Cancel)
+    {
+        event->ignore();
+    }
+    else
+    {
+        if (result == QMessageBox::Yes)
+        {
+            QListWidgetItem *item = 0;
+            item = this->ui->lstServers->currentItem();
+
+            if (item != 0)
+                this->updateServer(item); // Update any changes
+            this->saveSettings(); // Save the config
+            this->rebuildActions();
+        }
+
+        event->ignore();
+        this->hide();
+    }
 }
 
 // SLOTS //
+
+void BaseWindow::activateMenu(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::DoubleClick)
+    {
+        this->show();
+    }
+
+    if (reason == QSystemTrayIcon::Context)
+    {
+        this->tray->show();
+    }
+}
 
 void BaseWindow::saveSettings()
 {
@@ -229,6 +307,9 @@ void BaseWindow::editServer(QListWidgetItem* cur, QListWidgetItem* prev = 0)
 }
 ServerRecord* BaseWindow::findRecord(QListWidgetItem* wid)
 {
+    if (wid == 0)
+        return 0;
+
     ServerRecord *foundRec = 0;
     for(int i = 0; i < m_servers.size(); i++)
     {
@@ -301,9 +382,95 @@ void BaseWindow::populateServer()
 
 void BaseWindow::on_btnSaveConfig_clicked()
 {
+    this->ui->btnSaveConfig->setEnabled(false);
     QListWidgetItem *item = 0;
     item = this->ui->lstServers->currentItem();
 
     this->updateServer(item); // Update any changes
     this->saveSettings(); // Save the config
+
+    this->rebuildActions();
+    this->ui->btnSaveConfig->setEnabled(true);
+
+    this->hide();
+}
+
+void BaseWindow::rebuildActions()
+{
+
+    // Delete previous Servers & Thier Menus
+    this->deleteMenuItems(this->trayServersMenu);
+
+    for(int i = 0; i < this->servers()->size(); i++)
+    {
+        QMenu *menu = this->buildServerMenu(this->servers()->at(i));
+
+        this->trayServersMenu->addMenu(menu);
+    }
+
+}
+
+QMenu* BaseWindow::buildServerMenu(ServerRecord *rec)
+{
+    QString menuName("%1 (%2)");
+    menuName = menuName.arg(rec->serverName(), rec->serverHost());
+
+    // Build the base menu
+    QMenu *menu = new QMenu(menuName);
+
+    QAction *open = menu->addAction("Knock Open...");
+    QAction *close = menu->addAction("Knock Close...");
+
+    // Connect the actions
+    connect(open, SIGNAL(triggered()), rec, SIGNAL(knockOpen()));
+    connect(close, SIGNAL(triggered()), rec, SIGNAL(knockClose()));
+
+    return menu;
+}
+
+void BaseWindow::deleteMenuItems(QMenu *menu)
+{
+    QList<QAction*> mActions = menu->actions();
+
+    for (int i = 0; i < mActions.size(); i++)
+    {
+        QAction *act = mActions.at(i);
+
+        menu->removeAction(act); // Remove the action!
+
+        QMenu *men = 0;
+        men = act->menu();
+        if (men != 0)
+        {
+            this->deleteMenuItems(men); // Recursion
+            men->deleteLater();
+        }
+
+        act->deleteLater();
+    }
+
+    // Note at this point mActions has dangling pointers...
+}
+
+void BaseWindow::knockOpen()
+{
+    ServerRecord *rec = (ServerRecord*)sender(); // Get the record
+
+    KnockDialog *dialog = new KnockDialog(this, rec, KnockDialog::Open);
+    connect(dialog, SIGNAL(finished()), this, SLOT(cleanupForm()));
+    dialog->show();
+}
+
+void BaseWindow::knockClose()
+{
+    ServerRecord *rec = (ServerRecord*)sender(); // Get the record
+
+    KnockDialog *dialog = new KnockDialog(this, rec, KnockDialog::Close);
+    connect(dialog, SIGNAL(finished(int)), this, SLOT(cleanupForm()));
+    dialog->show();
+}
+
+void BaseWindow::cleanupForm()
+{
+    sender()->deleteLater(); // Queue the sender for later deletion!
 }

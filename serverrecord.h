@@ -37,12 +37,10 @@ public:
     QDomElement toElement(QDomDocument doc);
     void fromElement(QDomElement el);
 
-public slots:
-    void knockOpen();
-    void knockClose();
-
 signals:
     void serverNameUpdated(QString oName, QString sName);
+    void knockOpen();
+    void knockClose();
 
 };
 

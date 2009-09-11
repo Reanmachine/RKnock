@@ -155,15 +155,3 @@ void ServerRecord::fromStringOpen(QString close)
         }
     }
 }
-
-// SLOTS //
-
-void ServerRecord::knockOpen()
-{
-
-}
-
-void ServerRecord::knockClose()
-{
-
-}

@@ -11,6 +11,6 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain("reanmachine.com");
 
     BaseWindow w;
-    w.show();
+    //w.show();
     return a.exec();
 }

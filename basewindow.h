@@ -1,11 +1,19 @@
 #ifndef BASEWINDOW_H
 #define BASEWINDOW_H
 
+// QtCore
+#include <QList>
+
+// QtGui
+#include <QtGui/QAction>
+#include <QtGui/QMenu>
+#include <QtGui/QSystemTrayIcon>
 #include <QtGui/QWidget>
 #include <QtGui/QListWidgetItem>
-#include <QList>
-#include <QtXml>
+#include <QtGui/QCloseEvent>
 
+// QtXml
+#include <QtXml>
 
 #include "serverrecord.h"
 
@@ -18,6 +26,9 @@ namespace Ui
 class BaseWindow : public QWidget
 {
     Q_OBJECT
+    QPointer<QSystemTrayIcon> tray;
+    QPointer<QMenu> trayMenu;
+    QPointer<QMenu> trayServersMenu;
 
 public:
     BaseWindow(QWidget *parent = 0);
@@ -25,7 +36,12 @@ public:
 
     QList<ServerRecord*>* servers() { return &m_servers; }
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 public slots:
+    void activateMenu(QSystemTrayIcon::ActivationReason reason);
+
     // Settings
     void saveSettings();
     void loadSettings();
@@ -41,6 +57,11 @@ public slots:
 
     void updateServerName(QString oName, QString sName);
 
+    void rebuildActions();
+
+    void knockOpen();
+    void knockClose();
+    void cleanupForm();
 private:
     Ui::BaseWindow *ui;
 
@@ -50,6 +71,9 @@ private:
 
     void insertServer(QString name, QString host, QList<int> open, QList<int> close);
     void insertServer(QDomElement el);
+
+    void deleteMenuItems(QMenu *menu);
+    QMenu* buildServerMenu(ServerRecord *rec);
 
     QList<ServerRecord*> m_servers;
 
