@@ -66,7 +66,9 @@ bool KnockerThread::knockPort(int port)
         QThread::yieldCurrentThread();
     }*/
 
-    bool res = socket.waitForConnected(1000);
+    bool res = socket.waitForConnected(100);
+    //socket.close(); // Close Immediately!
+
 
     step();
 
