@@ -20,6 +20,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
     QApplication *app = (QApplication*)QApplication::instance();
     QString line = QString("%1 %2").arg(app->organizationName(), app->applicationName());
     this->m_ui->lblApplicationLine->setText(line);
+    this->m_ui->lblAppVersion->setText(app->applicationVersion());
 
     this->setWindowTitle(QString("About %1").arg(app->applicationName()));
 }
