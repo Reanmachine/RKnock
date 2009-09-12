@@ -363,8 +363,11 @@ void BaseWindow::updateServer(QListWidgetItem* wid)
         foundRec->fromStringOpen(this->ui->txtOpenSequence->toPlainText());
         foundRec->fromStringClose(this->ui->txtCloseSequence->toPlainText());
 
-        // Update the widget item
-        //wid->setText(this->ui->txtServerName->text());
+        QString cmbVal = this->ui->cmbType->itemText(this->ui->cmbType->currentIndex());
+        if (cmbVal == "TCP")
+            foundRec->setServerProtocol(ServerRecord::TCP);
+        if (cmbVal == "UDP")
+            foundRec->setServerProtocol(ServerRecord::UDP);
     }
 }
 
@@ -386,6 +389,19 @@ void BaseWindow::populateServer()
     this->ui->txtServerHost->setText(foundRec->serverHost());
     this->ui->txtOpenSequence->setPlainText(foundRec->toStringOpen());
     this->ui->txtCloseSequence->setPlainText(foundRec->toStringClose());
+
+    ServerRecord::ServerProtocol prot = foundRec->serverProtocol();
+    QString lookup;
+    if (prot == ServerRecord::TCP)
+        lookup = "TCP";
+    if (prot == ServerRecord::UDP)
+        lookup = "UDP";
+
+    int index = this->ui->cmbType->findText(lookup);
+    if (index != -1)
+    {
+        this->ui->cmbType->setCurrentIndex(index);
+    }
 }
 
 void BaseWindow::on_btnSaveConfig_clicked()

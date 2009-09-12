@@ -5,6 +5,7 @@
 
 ServerRecord::ServerRecord()
 {
+    this->m_serverProtocol = ServerRecord::TCP;
 }
 
 void ServerRecord::fromElement(QDomElement el)
@@ -15,12 +16,18 @@ void ServerRecord::fromElement(QDomElement el)
     QString sName = el.attribute("ServerName", "<Empty Server Name>");
     QString sHost = el.attribute("ServerHost", "<Empty Server Host>");
 
+    QString prot = el.attribute("Protocol", "TCP");
+
     setServerName(sName);
     setServerHost(sHost);
 
+    if (prot == "TCP")
+        setServerProtocol(ServerRecord::TCP);
+    if (prot == "UDP")
+        setServerProtocol(ServerRecord::UDP);
+
     QDomElement osq = el.firstChildElement("OpenSequence");
     QDomElement csq = el.firstChildElement("CloseSequence");
-
 
     if (!osq.isNull())
     {
@@ -62,6 +69,13 @@ QDomElement ServerRecord::toElement(QDomDocument doc)
     QDomElement el = doc.createElement("Server");
     el.setAttribute("ServerName", serverName());
     el.setAttribute("ServerHost", serverHost());
+    QString proto;
+    if (serverProtocol() == ServerRecord::TCP)
+        proto = "TCP";
+    if (serverProtocol() == ServerRecord::UDP)
+        proto = "UDP";
+
+    el.setAttribute("Protocol", proto);
 
     QDomElement osq = doc.createElement("OpenSequence");
     for (int i = 0; i < this->m_serverOpen.size(); i++)

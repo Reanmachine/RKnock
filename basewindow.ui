@@ -89,6 +89,27 @@
       <widget class="QLineEdit" name="txtServerHost"/>
      </item>
      <item>
+      <widget class="QLabel" name="lblType">
+       <property name="text">
+        <string>Knock Type:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbType">
+       <item>
+        <property name="text">
+         <string>TCP</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>UDP</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="lblOpenSequence">
        <property name="maximumSize">
         <size>
@@ -148,7 +169,7 @@
     <string>Save Settings...</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
