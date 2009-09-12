@@ -27,7 +27,7 @@ BaseWindow::BaseWindow(QWidget *parent)
     this->setWindowTitle(QString("%1 %2 (v%3)").arg(app->organizationName(), app->applicationName(), app->applicationVersion()));
 
     // Icon
-    QIcon ico(":/resources/RKnock.ico");
+    QIcon ico(":resources/RKnock.ico");
     this->setWindowIcon(ico);
 
     // Find the config file, does it exist?
@@ -74,7 +74,7 @@ BaseWindow::BaseWindow(QWidget *parent)
     this->trayServersMenu = new QMenu("Servers", this->trayMenu);
 
     this->tray->setContextMenu(this->trayMenu);
-    this->tray->setIcon(QIcon(":/resources/RKnock.ico"));
+    this->tray->setIcon(ico);
     this->tray->setVisible(true);
 
     QAction *subaction = 0;

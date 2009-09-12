@@ -2,6 +2,14 @@
 #include "core.h"
 #include "basewindow.h"
 
+#include <QtCore/QFile>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QList>
+#include <QtGui/QMessageBox>
+#include <QtDebug>
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -10,6 +18,8 @@ int main(int argc, char *argv[])
     a.setApplicationVersion(RKNOCK_VERSION);
     a.setOrganizationName("Reanmachine");
     a.setOrganizationDomain("reanmachine.com");
+    a.setQuitOnLastWindowClosed(false);
+
 
     BaseWindow w;
     //w.show();

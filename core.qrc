@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/resources" >
-        <file>RKnock.ico</file>
         <file>banner.jpg</file>
+        <file>RKnock.ico</file>
     </qresource>
 </RCC>
