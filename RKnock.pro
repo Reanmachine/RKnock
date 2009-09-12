@@ -10,13 +10,19 @@ SOURCES += main.cpp \
     serverrecord.cpp \
     knockdialog.cpp \
     knockerthread.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    knockengine.cpp \
+    udpknockengine.cpp \
+    tcpknockengine.cpp
 HEADERS += basewindow.h \
     serverrecord.h \
     knockdialog.h \
     knockerthread.h \
     aboutdialog.h \
-    core.h
+    core.h \
+    knockengine.h \
+    udpknockengine.h \
+    tcpknockengine.h
 FORMS += basewindow.ui \
     knockdialog.ui \
     aboutdialog.ui
