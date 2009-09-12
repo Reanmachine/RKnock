@@ -3,3 +3,4 @@
 /release/
 /release/*
 Makefile*
+ui_*.h
