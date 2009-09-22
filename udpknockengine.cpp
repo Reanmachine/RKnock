@@ -1,4 +1,6 @@
 #include "udpknockengine.h"
+#include "knockengine.h"
+#include <QUdpSocket>
 
 UdpKnockEngine::UdpKnockEngine()
 {
@@ -6,7 +8,12 @@ UdpKnockEngine::UdpKnockEngine()
 
 bool UdpKnockEngine::knockPort(int port)
 {
-    // TODO: Implementation
+    QUdpSocket sock;
 
-    return false;
+    sock.writeDatagram(QString("Knock, Knock!").toAscii(), this->addr, (quint16)port);
+
+    if (sock.error())
+        return false;
+    else
+        return true;
 }
